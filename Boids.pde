@@ -5,6 +5,7 @@ Boid[] boids;
 void setup() {
   size(500, 500);
   background(0);
+  noStroke();
 
   // initial conditions
   boids = new Boid[N_BOIDS];
@@ -15,9 +16,13 @@ void setup() {
 }
 
 void draw() {
+  fill(0, 50);
+  rect(0, 0, width, height);
   // draw boids
   for (Boid boid : boids)
     boid.draw();
   // move all boids to new positions
+  for (Boid boid: boids)
+    boid.update();
 }
 
