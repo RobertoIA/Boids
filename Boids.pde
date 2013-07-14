@@ -1,7 +1,10 @@
 static final int N_BOIDS = 20;
 static final float MAX_SPEED = .8;
+static final float COHESION_STR = 1.0;
+static final float SEPARATION_STR = 2.0;
+static final float ALIGNMENT_STR = 1.0;
 static final int SIGHT_RANGE = 80;
-static final int PERSONAL_SPACE = 30;
+static final int PERSONAL_SPACE = 8;
 
 Boid[] boids;
 
@@ -36,8 +39,8 @@ void draw() {
     // rule 3: alignment
 
     // apply velocity changes
-    boid.velocity.x += cohesion.x + separation.x;
-    boid.velocity.y += cohesion.y + separation.y;
+    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * ALIGNMENT_STR;
+    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * ALIGNMENT_STR;
 
     boid.update();
   }
@@ -65,7 +68,7 @@ Tuple cohesion(Boid boid) {
     cohesion.x -= boid.position.x;
     cohesion.y -= boid.position.y;
   }
-  
+
   return cohesion;
 }
 
@@ -81,6 +84,9 @@ Tuple separation(Boid boid) {
       separation.y -= (boid.position.y - other.position.y);
     }
   }
+
+  separation.x = -separation.x;
+  separation.y = -separation.y;
 
   return separation;
 }

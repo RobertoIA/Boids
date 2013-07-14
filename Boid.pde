@@ -27,8 +27,6 @@ class Boid {
       float proportion = max(abs(velocity.x), abs(velocity.y)) / MAX_SPEED;
       this.velocity.x /= proportion;
       this.velocity.y /= proportion;
-
-      println("adjusted " + this.velocity.x + " " + this.velocity.y);
     }
 
     Tuple nextPosition = new Tuple(this.position.x + this.velocity.x, 
