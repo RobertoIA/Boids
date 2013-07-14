@@ -80,8 +80,8 @@ Tuple separation(Boid boid) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
 
     if (other!= boid && distance < SIGHT_RANGE && distance < PERSONAL_SPACE) {
-      separation.x -= (boid.position.x - other.position.x);
-      separation.y -= (boid.position.y - other.position.y);
+      separation.x -= (boid.position.x - other.position.x) / (distance / PERSONAL_SPACE);
+      separation.y -= (boid.position.y - other.position.y) / (distance / PERSONAL_SPACE);
     }
   }
 
