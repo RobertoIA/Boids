@@ -3,10 +3,10 @@ class Boid {
   Tuple position;
   Tuple velocity;
 
-  public Boid(int x, int y) {
+  public Boid(float x, float y) {
     position = new Tuple(x, y);
-    velocity = new Tuple((int) random(-2, 2), 
-    (int) random(-2, 2));
+    velocity = new Tuple(random(-1, 1), 
+    random(-1, 1));
   }
 
   public void update() {
@@ -17,6 +17,11 @@ class Boid {
       this.velocity.x = -this.velocity.x;
     if (this.position.y > height || this.position.y < 0)
       this.velocity.y = -this.velocity.y;
+
+    this.velocity.x = constrain(this.velocity.x, -1, 1);
+    this.velocity.y = constrain(this.velocity.y, -1, 1);
+
+    println(this.velocity.x + " " + this.velocity.y);
   }
 
   public void draw() {

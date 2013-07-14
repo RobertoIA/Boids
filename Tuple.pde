@@ -1,8 +1,8 @@
 class Tuple {
-  int x;
-  int y;
+  float x;
+  float y;
 
-  public Tuple(int x, int y) {
+  public Tuple(float x, float y) {
     this.x = x;
     this.y = y;
   }
