@@ -1,5 +1,5 @@
 static final int N_BOIDS = 20;
-static final int MAX_SPEED = 1;
+static final float MAX_SPEED = .8;
 static final int SIGHT_RANGE = 80;
 static final int PERSONAL_SPACE = 30;
 
@@ -7,7 +7,7 @@ Boid[] boids;
 
 void setup() {
   size(500, 500);
-  frameRate(30);
+  frameRate(60);
   background(0);
   noStroke();
 
@@ -39,12 +39,6 @@ void draw() {
     boid.velocity.x += cohesion.x + separation.x;
     boid.velocity.y += cohesion.y + separation.y;
 
-    // speed limit
-    //boid.velocity.x = constrain(boid.velocity.x, -MAX_SPEED, MAX_SPEED);
-    //boid.velocity.y = constrain(boid.velocity.y, -MAX_SPEED, MAX_SPEED);
-
-    println("v: " + boid.velocity.x + " " + boid.velocity.y);
-
     boid.update();
   }
 }
@@ -71,12 +65,7 @@ Tuple cohesion(Boid boid) {
     cohesion.x -= boid.position.x;
     cohesion.y -= boid.position.y;
   }
-
-  //cohesion.x = constrain(cohesion.x, -MAX_SPEED, MAX_SPEED);
-  //cohesion.y = constrain(cohesion.y, -MAX_SPEED, MAX_SPEED);
-
-  println("c:" + cohesion.x + " " + cohesion.y);
-
+  
   return cohesion;
 }
 
@@ -92,11 +81,6 @@ Tuple separation(Boid boid) {
       separation.y -= (boid.position.y - other.position.y);
     }
   }
-
-  //separation.x = constrain(separation.x, -MAX_SPEED, MAX_SPEED);
-  //separation.y = constrain(separation.y, -MAX_SPEED, MAX_SPEED);
-
-  println("s:" + separation.x + " " + separation.y);
 
   return separation;
 }
