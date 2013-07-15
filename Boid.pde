@@ -10,7 +10,8 @@ class Boid {
   }
 
   public void update() {
-    adjustVelocity();
+    velocity.setBounds(MAX_SPEED_TOTAL);
+    manageCollisions();
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -22,9 +23,7 @@ class Boid {
     point(position.x, position.y);
   }
 
-  private void adjustVelocity() {
-    velocity.adjustSpeed(MAX_SPEED_TOTAL);
-
+  private void manageCollisions() {
     Tuple nextPosition = new Tuple(this.position.x + this.velocity.x, 
     this.position.y + this.velocity.y);
 

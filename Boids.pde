@@ -1,16 +1,17 @@
-static final int N_BOIDS = 200;
+static final int N_BOIDS = 1000;
 static final float MAX_SPEED_PARTIAL = .05;
 static final float MAX_SPEED_TOTAL = 2;
-static final float COHESION_STR = 1.0;
-static final float SEPARATION_STR = 1.0;
-static final float ALIGNMENT_STR = 1.0;
-static final int SIGHT_RANGE = 60;
-static final int PERSONAL_SPACE = 5;
+static final float COHESION_STR = .6;
+static final float SEPARATION_STR = 1.8;
+static final float ALIGNMENT_STR = .8;
+static final float AVOIDANCE_STR = 3.0;
+static final int SIGHT_RANGE = 40;
+static final int PERSONAL_SPACE = 12;
 
 Boid[] boids;
 
 void setup() {
-  size(500, 500);
+  size(1200, 800);
   frameRate(60);
   background(0);
   noStroke();
@@ -31,7 +32,7 @@ void draw() {
   for (Boid boid : boids)
     boid.draw();
   // move all boids to new positions
-  Tuple cohesion, separation, alignment;
+  Tuple cohesion, separation, alignment, avoidance;
   for (Boid boid: boids) {
     // rule 1: cohesion
     cohesion = cohesion(boid);
@@ -39,9 +40,13 @@ void draw() {
     separation = separation(boid);
     // rule 3: alignment
     alignment = alignment(boid);
+    // avoidance
+    avoidance = avoidance(boid);
     // apply velocity changes
-    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR;
-    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR;
+    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR +
+      avoidance.x * AVOIDANCE_STR;
+    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR +
+      avoidance.y * AVOIDANCE_STR;   
 
     boid.update();
   }
@@ -70,7 +75,7 @@ Tuple cohesion(Boid boid) {
     cohesion.y -= boid.position.y;
   }
 
-  cohesion.adjustSpeed(MAX_SPEED_PARTIAL);
+  cohesion.setBounds(MAX_SPEED_PARTIAL);
   return cohesion;
 }
 
@@ -90,7 +95,7 @@ Tuple separation(Boid boid) {
   separation.x = -separation.x;
   separation.y = -separation.y;
 
-  separation.adjustSpeed(MAX_SPEED_PARTIAL);
+  separation.setBounds(MAX_SPEED_PARTIAL);
   return separation;
 }
 
@@ -114,7 +119,27 @@ Tuple alignment(Boid boid) {
     alignment.y /= n;
   }
 
-  alignment.adjustSpeed(MAX_SPEED_PARTIAL);
+  alignment.setBounds(MAX_SPEED_PARTIAL);
   return alignment;
+}
+
+Tuple avoidance(Boid boid) {
+  Tuple avoidance = new Tuple(0, 0);
+
+  if (dist(boid.position.x, boid.position.y, 0, boid.position.y) < SIGHT_RANGE) {
+    avoidance.x += MAX_SPEED_PARTIAL;
+  }
+  else if (dist(boid.position.x, boid.position.y, width, boid.position.y) < SIGHT_RANGE) {
+    avoidance.x -= MAX_SPEED_PARTIAL;
+  }
+
+  if (dist(boid.position.x, boid.position.y, boid.position.x, 0) < SIGHT_RANGE) {
+    avoidance.y += MAX_SPEED_PARTIAL;
+  }
+  else if (dist(boid.position.x, boid.position.y, boid.position.x, height) < SIGHT_RANGE) {
+    avoidance.y -= MAX_SPEED_PARTIAL;
+  }
+
+  return avoidance;
 }
 

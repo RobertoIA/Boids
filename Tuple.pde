@@ -7,9 +7,9 @@ class Tuple {
     this.y = y;
   }
 
-  void adjustSpeed(float maxSpeed) {
-    if (max(abs(this.x), abs(this.y)) > maxSpeed) {
-      float proportion = max(abs(this.x), abs(this.y)) / maxSpeed;
+  void setBounds(float maximumValue) {
+    if (max(abs(this.x), abs(this.y)) > maximumValue) {
+      float proportion = max(abs(this.x), abs(this.y)) / maximumValue;
       this.x /= proportion;
       this.y /= proportion;
     }
