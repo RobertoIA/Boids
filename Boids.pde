@@ -1,10 +1,11 @@
-static final int N_BOIDS = 20;
-static final float MAX_SPEED = .8;
+static final int N_BOIDS = 200;
+static final float MAX_SPEED_PARTIAL = .05;
+static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = 1.0;
-static final float SEPARATION_STR = 2.0;
+static final float SEPARATION_STR = 1.0;
 static final float ALIGNMENT_STR = 1.0;
-static final int SIGHT_RANGE = 80;
-static final int PERSONAL_SPACE = 8;
+static final int SIGHT_RANGE = 60;
+static final int PERSONAL_SPACE = 5;
 
 Boid[] boids;
 
@@ -37,10 +38,10 @@ void draw() {
     // rule 2: separation
     separation = separation(boid);
     // rule 3: alignment
-
+    alignment = alignment(boid);
     // apply velocity changes
-    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * ALIGNMENT_STR;
-    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * ALIGNMENT_STR;
+    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR;
+    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR;
 
     boid.update();
   }
@@ -69,6 +70,7 @@ Tuple cohesion(Boid boid) {
     cohesion.y -= boid.position.y;
   }
 
+  cohesion.adjustSpeed(MAX_SPEED_PARTIAL);
   return cohesion;
 }
 
@@ -88,6 +90,31 @@ Tuple separation(Boid boid) {
   separation.x = -separation.x;
   separation.y = -separation.y;
 
+  separation.adjustSpeed(MAX_SPEED_PARTIAL);
   return separation;
+}
+
+Tuple alignment(Boid boid) {
+  Tuple alignment = new Tuple(0, 0);
+  int n = 0;
+  float distance;
+
+  for (Boid other : boids) {
+    distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
+
+    if (other!= boid && distance < SIGHT_RANGE) {
+      alignment.x += other.velocity.x;
+      alignment.y += other.velocity.y;
+      n++;
+    }
+  }
+
+  if (n != 0) {
+    alignment.x /= n;
+    alignment.y /= n;
+  }
+
+  alignment.adjustSpeed(MAX_SPEED_PARTIAL);
+  return alignment;
 }
 

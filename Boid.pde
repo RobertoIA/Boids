@@ -5,8 +5,8 @@ class Boid {
 
   public Boid(float x, float y) {
     position = new Tuple(x, y);
-    velocity = new Tuple(random(-1, 1), 
-    random(-1, 1));
+    velocity = new Tuple(random(-MAX_SPEED_TOTAL, MAX_SPEED_TOTAL), 
+    random(-MAX_SPEED_TOTAL, MAX_SPEED_TOTAL));
   }
 
   public void update() {
@@ -23,11 +23,7 @@ class Boid {
   }
 
   private void adjustVelocity() {
-    if (max(abs(velocity.x), abs(velocity.y)) > MAX_SPEED) {
-      float proportion = max(abs(velocity.x), abs(velocity.y)) / MAX_SPEED;
-      this.velocity.x /= proportion;
-      this.velocity.y /= proportion;
-    }
+    velocity.adjustSpeed(MAX_SPEED_TOTAL);
 
     Tuple nextPosition = new Tuple(this.position.x + this.velocity.x, 
     this.position.y + this.velocity.y);
