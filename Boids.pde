@@ -1,27 +1,26 @@
-static final int N_BOIDS = 1000;
 static final float MAX_SPEED_PARTIAL = .05;
 static final float MAX_SPEED_TOTAL = 2;
-static final float COHESION_STR = .6;
+static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
-static final float ALIGNMENT_STR = .8;
+static final float ALIGNMENT_STR = 1.;
 static final float AVOIDANCE_STR = 3.0;
-static final int SIGHT_RANGE = 40;
+static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
 
-Boid[] boids;
+ArrayList<Boid> boids;
+PFont displayFont;
 
 void setup() {
-  size(1200, 800);
+  size(800, 800);
   frameRate(60);
+  smooth();
   background(0);
   noStroke();
 
+  displayFont = createFont("Arial Bold", 18);
+
   // initial conditions
-  boids = new Boid[N_BOIDS];
-  for (int i = 0; i < N_BOIDS; i++)
-    boids[i] = new Boid(
-    random(0, width + 1), 
-    random(0, height + 1));
+  boids = new ArrayList<Boid>();
 }
 
 void draw() {
@@ -50,6 +49,13 @@ void draw() {
 
     boid.update();
   }
+
+  fill(255);
+  text((int) frameRate + "fps - " + this.boids.size() + " boids.", 10, 20);
+}
+
+void mouseDragged() {
+  this.boids.add(new Boid(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
