@@ -4,6 +4,7 @@ static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
 static final float ALIGNMENT_STR = 1.;
 static final float AVOIDANCE_STR = 3.0;
+static final float ATTRACTION_STR = 3.0;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
 
@@ -11,7 +12,7 @@ ArrayList<Boid> boids;
 PFont displayFont;
 
 void setup() {
-  size(800, 800);
+  size(400, 400);
   frameRate(60);
   smooth();
   background(0);
@@ -31,7 +32,7 @@ void draw() {
   for (Boid boid : boids)
     boid.draw();
   // move all boids to new positions
-  Tuple cohesion, separation, alignment, avoidance;
+  Tuple cohesion, separation, alignment, avoidance, attraction;
   for (Boid boid: boids) {
     // rule 1: cohesion
     cohesion = cohesion(boid);
@@ -41,11 +42,13 @@ void draw() {
     alignment = alignment(boid);
     // avoidance
     avoidance = avoidance(boid);
+    // attraction
+    attraction = attraction(boid);
     // apply velocity changes
     boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR +
-      avoidance.x * AVOIDANCE_STR;
+      avoidance.x * AVOIDANCE_STR + attraction.x * ATTRACTION_STR;
     boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR +
-      avoidance.y * AVOIDANCE_STR;   
+      avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;  
 
     boid.update();
   }
@@ -147,5 +150,18 @@ Tuple avoidance(Boid boid) {
   }
 
   return avoidance;
+}
+
+Tuple attraction(Boid boid) {
+  Tuple attraction = new Tuple(0, 0);
+  float distance = dist(boid.position.x, boid.position.y, mouseX, mouseY);
+
+  if (distance < SIGHT_RANGE) {
+    attraction.x -= (boid.position.x - mouseX) / (distance / PERSONAL_SPACE);
+    attraction.y -= (boid.position.y - mouseY) / (distance / PERSONAL_SPACE);
+  }
+
+  attraction.setBounds(MAX_SPEED_PARTIAL);
+  return attraction;
 }
 
