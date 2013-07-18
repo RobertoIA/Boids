@@ -12,7 +12,7 @@ ArrayList<Boid> boids;
 PFont displayFont;
 
 void setup() {
-  size(400, 400);
+  size(800, 800);
   frameRate(60);
   smooth();
   background(0);
@@ -68,7 +68,7 @@ Tuple cohesion(Boid boid) {
 
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
-    if (distance < SIGHT_RANGE && other != boid) {
+    if (other != boid && distance < SIGHT_RANGE) {
 
       cohesion.x += other.position.x;
       cohesion.y += other.position.y;
@@ -95,7 +95,7 @@ Tuple separation(Boid boid) {
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
 
-    if (other!= boid && distance < SIGHT_RANGE && distance < PERSONAL_SPACE) {
+    if (other!= boid && distance < PERSONAL_SPACE) {
       separation.x -= (boid.position.x - other.position.x) / (distance / PERSONAL_SPACE);
       separation.y -= (boid.position.y - other.position.y) / (distance / PERSONAL_SPACE);
     }
