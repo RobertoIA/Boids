@@ -4,11 +4,14 @@ static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
 static final float ALIGNMENT_STR = 1.;
 static final float AVOIDANCE_STR = 3.0;
-static final float ATTRACTION_STR = 3.0;
+static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
 
+static final int N_FRUITS = 6;
+
 ArrayList<Boid> boids;
+ArrayList<Fruit> fruits;
 PFont displayFont;
 
 void setup() {
@@ -22,6 +25,9 @@ void setup() {
 
   // initial conditions
   boids = new ArrayList<Boid>();
+  fruits = new ArrayList<Fruit>();
+  for (int i = 0; i < N_FRUITS; i++)
+    fruits.add(new Fruit());
 }
 
 void draw() {
@@ -31,6 +37,9 @@ void draw() {
   // draw boids
   for (Boid boid : boids)
     boid.draw();
+  // draw fruits
+  for (Fruit fruit : fruits)
+    fruit.draw();
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
   for (Boid boid: boids) {
@@ -154,11 +163,21 @@ Tuple avoidance(Boid boid) {
 
 Tuple attraction(Boid boid) {
   Tuple attraction = new Tuple(0, 0);
-  float distance = dist(boid.position.x, boid.position.y, mouseX, mouseY);
+  float distance;
 
+  // attraction to mouse pointer
+  distance = dist(boid.position.x, boid.position.y, mouseX, mouseY);
   if (distance < SIGHT_RANGE) {
     attraction.x -= (boid.position.x - mouseX) / (distance / PERSONAL_SPACE);
     attraction.y -= (boid.position.y - mouseY) / (distance / PERSONAL_SPACE);
+  }
+  // attraction to fruit
+  for (Fruit fruit : fruits) {
+    distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+    if (distance < SIGHT_RANGE) {
+      attraction.x -= (boid.position.x - fruit.position.x) / (distance / PERSONAL_SPACE);
+      attraction.y -= (boid.position.y - fruit.position.y) / (distance / PERSONAL_SPACE);
+    }
   }
 
   attraction.setBounds(MAX_SPEED_PARTIAL);
