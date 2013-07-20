@@ -8,8 +8,8 @@ class Fruit {
 
   public void draw() {
     strokeWeight(1);
-    stroke(255, 0, 0);
-    ellipse(position.x, position.y, 10, 10);
+    stroke(255);
+    ellipse(position.x, position.y, FRUIT_SIZE, FRUIT_SIZE);
   }
 }
 

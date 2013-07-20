@@ -7,6 +7,7 @@ static final float AVOIDANCE_STR = 3.0;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
+static final int FRUIT_SIZE = 10;
 
 static final int N_FRUITS = 6;
 
@@ -156,6 +157,15 @@ Tuple avoidance(Boid boid) {
   }
   else if (dist(boid.position.x, boid.position.y, boid.position.x, height) < SIGHT_RANGE) {
     avoidance.y -= MAX_SPEED_PARTIAL;
+  }
+
+  float distance;
+  for (Fruit fruit : fruits) {
+    distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+    if (distance < PERSONAL_SPACE + FRUIT_SIZE / 2) {
+      avoidance.x += (boid.position.x - fruit.position.x);
+      avoidance.y += (boid.position.y - fruit.position.y);
+    }
   }
 
   return avoidance;
