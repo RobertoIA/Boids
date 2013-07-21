@@ -29,25 +29,23 @@ void setup() {
   // initial conditions
   boids = new ArrayList<Boid>();
   fruits = new ArrayList<Fruit>();
-  for (int i = 0; i < N_FRUITS; i++)
-    fruits.add(new Fruit());
 }
 
 void draw() {
   noStroke();
   fill(0, 50);
   rect(0, 0, width, height);
-  
+
   // draw fruits
   for (Fruit fruit : fruits)
     fruit.draw();
-    
+
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
   for (Boid boid: boids) {
     // draw boids
     boid.draw();
-    
+
     // rule 1: cohesion
     cohesion = cohesion(boid);
     // rule 2: separation
@@ -73,7 +71,13 @@ void draw() {
 }
 
 void mouseDragged() {
-  this.boids.add(new Boid(mouseX, mouseY));
+  if (mouseButton == LEFT)
+    this.boids.add(new Boid(mouseX, mouseY));
+}
+
+void mousePressed() {
+  if (mouseButton == RIGHT)
+    fruits.add(new Fruit(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
