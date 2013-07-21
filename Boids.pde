@@ -8,6 +8,8 @@ static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
 static final int FRUIT_SIZE = 10;
+static final int FEEDING_AREA = 50;
+static final int HUNGER_TRESHOLD = 200;
 
 static final int N_FRUITS = 6;
 
@@ -60,11 +62,13 @@ void draw() {
     boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR +
       avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;  
 
+    feeding(boid);
+
     boid.update();
   }
 
   fill(255);
-  text((int) frameRate + "fps - " + this.boids.size() + " boids.", 10, 20);
+  text((int) frameRate + "fps - " + this.boids.size() + " boids. " + frameCount, 10, 20);
 }
 
 void mouseDragged() {
@@ -182,15 +186,31 @@ Tuple attraction(Boid boid) {
     attraction.y -= (boid.position.y - mouseY) / (distance / PERSONAL_SPACE);
   }
   // attraction to fruit
-  for (Fruit fruit : fruits) {
-    distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
-    if (distance < SIGHT_RANGE) {
-      attraction.x -= (boid.position.x - fruit.position.x) / (distance / PERSONAL_SPACE);
-      attraction.y -= (boid.position.y - fruit.position.y) / (distance / PERSONAL_SPACE);
+  if (boid.health < HUNGER_TRESHOLD) {
+    for (Fruit fruit : fruits) {
+      distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+      if (distance < SIGHT_RANGE) {
+        attraction.x -= (boid.position.x - fruit.position.x) / (distance / PERSONAL_SPACE);
+        attraction.y -= (boid.position.y - fruit.position.y) / (distance / PERSONAL_SPACE);
+      }
     }
   }
 
   attraction.setBounds(MAX_SPEED_PARTIAL);
   return attraction;
+}
+
+void feeding(Boid boid) {
+  float distance;
+  if (frameCount % 5 == 0) {
+    for (Fruit fruit : fruits) {
+      distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+
+      if (distance < FEEDING_AREA && fruit.food > 0 && boid.health < 255) {
+        fruit.food--;
+        boid.health++;
+      }
+    }
+  }
 }
 

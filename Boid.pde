@@ -2,11 +2,13 @@ class Boid {
 
   Tuple position;
   Tuple velocity;
+  int health;
 
   public Boid(float x, float y) {
     position = new Tuple(x, y);
     velocity = new Tuple(random(-MAX_SPEED_TOTAL, MAX_SPEED_TOTAL), 
     random(-MAX_SPEED_TOTAL, MAX_SPEED_TOTAL));
+    health = (int) random(200, 256);
   }
 
   public void update() {
@@ -15,11 +17,15 @@ class Boid {
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
+    // starvation
+    if (frameCount % 10 == 0 && health > 0)
+      health--;
   }
 
   public void draw() {
     strokeWeight(3);
-    stroke(255);
+    stroke(health);
     point(position.x, position.y);
   }
 
