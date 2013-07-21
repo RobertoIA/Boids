@@ -37,15 +37,17 @@ void draw() {
   noStroke();
   fill(0, 50);
   rect(0, 0, width, height);
-  // draw boids
-  for (Boid boid : boids)
-    boid.draw();
+  
   // draw fruits
   for (Fruit fruit : fruits)
     fruit.draw();
+    
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
   for (Boid boid: boids) {
+    // draw boids
+    boid.draw();
+    
     // rule 1: cohesion
     cohesion = cohesion(boid);
     // rule 2: separation
