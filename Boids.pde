@@ -67,8 +67,7 @@ void draw() {
     boid.update();
   }
 
-  fill(255);
-  text((int) frameRate + "fps - " + this.boids.size() + " boids. " + frameCount, 10, 20);
+  frame.setTitle((int) frameRate + "fps - " + this.boids.size() + " boids.");
 }
 
 void mouseDragged() {
