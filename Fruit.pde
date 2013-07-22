@@ -5,11 +5,11 @@ class Fruit {
 
   public Fruit(float x, float y) {
     position = new Tuple(x, y);
-    food = 1000;
+    food = 5000;
   }
 
   public void draw() {
-    int shade = (int) map(food, 0, 1000, 0, 255);
+    int shade = (int) map(food, 0, 5000, 0, 255);
     stroke(shade);
     strokeWeight(1);
     fill(shade);

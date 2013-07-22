@@ -67,7 +67,7 @@ void draw() {
     boid.update();
   }
 
-  frame.setTitle((int) frameRate + "fps - " + this.boids.size() + " boids.");
+  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - fruits " + this.fruits.size());
 }
 
 void mouseDragged() {
