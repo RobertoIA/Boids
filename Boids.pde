@@ -208,6 +208,7 @@ Tuple attraction(Boid boid) {
 void feeding(Boid boid) {
   float distance;
   if (frameCount % 5 == 0) {
+    ArrayList<Fruit> eatenFruits = new ArrayList<Fruit>();
     for (Fruit fruit : fruits) {
       distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
 
@@ -215,7 +216,12 @@ void feeding(Boid boid) {
         fruit.food--;
         boid.health++;
       }
+      if (fruit.food == 0)
+        eatenFruits.add(fruit);
     }
+    // removes fruits that have been completely eaten
+    for (Fruit eatenFruit : eatenFruits)
+      fruits.remove(eatenFruit);
   }
 }
 
