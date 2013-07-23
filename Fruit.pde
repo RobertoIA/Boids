@@ -22,5 +22,10 @@ class Fruit {
     stroke(shade);
     ellipse(position.x, position.y, pulseRadius, pulseRadius);
   }
+
+  public void update() {
+    if (this.position.y < height - FRUIT_SIZE / 2)
+      this.position.y += .8;
+  }
 }
 

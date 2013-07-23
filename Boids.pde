@@ -3,15 +3,14 @@ static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
 static final float ALIGNMENT_STR = 1.;
-static final float AVOIDANCE_STR = 3.0;
+static final float AVOIDANCE_STR = 3.;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
 static final int FRUIT_SIZE = 10;
 static final int FEEDING_AREA = 50;
 static final int HUNGER_TRESHOLD = 200;
-
-static final int N_FRUITS = 6;
+static final int TAIL_LENGTH = 4;
 
 ArrayList<Boid> boids;
 ArrayList<Fruit> fruits;
@@ -33,12 +32,8 @@ void setup() {
 
 void draw() {
   noStroke();
-  fill(0, 50);
+  fill(0);
   rect(0, 0, width, height);
-
-  // draw fruits
-  for (Fruit fruit : fruits)
-    fruit.draw();
 
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
@@ -65,6 +60,12 @@ void draw() {
     feeding(boid);
 
     boid.update();
+  }
+
+  // draw fruits
+  for (Fruit fruit : fruits) {
+    fruit.draw();
+    fruit.update();
   }
 
   frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - fruits " + this.fruits.size());
