@@ -37,6 +37,7 @@ void draw() {
 
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
+  ArrayList<Boid> deadBoids = new ArrayList<Boid>();
   for (Boid boid: boids) {
     // draw boids
     boid.draw();
@@ -60,7 +61,13 @@ void draw() {
     feeding(boid);
 
     boid.update();
+    if (boid.health == 0)
+      deadBoids.add(boid);
   }
+
+  // removes dead boids
+  for (Boid deadBoid : deadBoids)
+    boids.remove(deadBoid);
 
   // draw fruits
   for (Fruit fruit : fruits) {
@@ -187,7 +194,7 @@ Tuple attraction(Boid boid) {
 
   // attraction to mouse pointer
   distance = dist(boid.position.x, boid.position.y, mouseX, mouseY);
-  if (distance < SIGHT_RANGE) {
+  if (distance < SIGHT_RANGE && distance != 0) {
     attraction.x -= (boid.position.x - mouseX) / (distance / PERSONAL_SPACE);
     attraction.y -= (boid.position.y - mouseY) / (distance / PERSONAL_SPACE);
   }

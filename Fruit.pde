@@ -19,7 +19,7 @@ class Fruit {
       pulseRadius = pulseRadius < FEEDING_AREA ? pulseRadius + 1 : 0;
     noFill();
     strokeWeight(1);
-    stroke(shade);
+    stroke(255);
     ellipse(position.x, position.y, pulseRadius, pulseRadius);
   }
 
