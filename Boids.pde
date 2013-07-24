@@ -7,17 +7,16 @@ static final float AVOIDANCE_STR = 3.;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
-static final int FRUIT_SIZE = 10;
+//static final int FOOD_SIZE = 10;
 static final int FEEDING_AREA = 50;
 static final int HUNGER_TRESHOLD = 200;
 static final int TAIL_LENGTH = 4;
-
 static final int MAX_PELLETS = 8;
 static final int PELLET_SIZE = 2;
 static final float PELLETS_SEPARATION = 20;
 
 ArrayList<Boid> boids;
-ArrayList<Fruit> fruits;
+ArrayList<Food> foodGroups;
 PFont displayFont;
 
 void setup() {
@@ -31,7 +30,7 @@ void setup() {
 
   // initial conditions
   boids = new ArrayList<Boid>();
-  fruits = new ArrayList<Fruit>();
+  foodGroups = new ArrayList<Food>();
 }
 
 void draw() {
@@ -74,12 +73,12 @@ void draw() {
     boids.remove(deadBoid);
 
   // draw fruits
-  for (Fruit fruit : fruits) {
-    fruit.draw();
-    fruit.update();
+  for (Food food : foodGroups) {
+    food.draw();
+    food.update();
   }
 
-  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - food " + this.fruits.size());
+  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - food " + this.foodGroups.size());
 }
 
 void mouseDragged() {
@@ -89,7 +88,7 @@ void mouseDragged() {
 
 void mousePressed() {
   if (mouseButton == RIGHT)
-    fruits.add(new Fruit(mouseX, mouseY));
+    foodGroups.add(new Food(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
@@ -181,11 +180,11 @@ Tuple avoidance(Boid boid) {
   }
 
   float distance;
-  for (Fruit fruit : fruits) {
-    distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
-    if (distance < PERSONAL_SPACE + FRUIT_SIZE / 2) {
-      avoidance.x += (boid.position.x - fruit.position.x);
-      avoidance.y += (boid.position.y - fruit.position.y);
+  for (Food food : foodGroups) {
+    distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
+    if (distance < PERSONAL_SPACE + PELLETS_SEPARATION / 2) {
+      avoidance.x += (boid.position.x - food.position.x);
+      avoidance.y += (boid.position.y - food.position.y);
     }
   }
 
@@ -204,11 +203,11 @@ Tuple attraction(Boid boid) {
   }
   // attraction to fruit
   if (boid.health < HUNGER_TRESHOLD) {
-    for (Fruit fruit : fruits) {
-      distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+    for (Food food : foodGroups) {
+      distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
       if (distance < SIGHT_RANGE) {
-        attraction.x -= (boid.position.x - fruit.position.x) / (distance / PERSONAL_SPACE);
-        attraction.y -= (boid.position.y - fruit.position.y) / (distance / PERSONAL_SPACE);
+        attraction.x -= (boid.position.x - food.position.x) / (distance / PERSONAL_SPACE);
+        attraction.y -= (boid.position.y - food.position.y) / (distance / PERSONAL_SPACE);
       }
     }
   }
@@ -220,20 +219,20 @@ Tuple attraction(Boid boid) {
 void feeding(Boid boid) {
   float distance;
   if (frameCount % 5 == 0) {
-    ArrayList<Fruit> eatenFruits = new ArrayList<Fruit>();
-    for (Fruit fruit : fruits) {
-      distance = dist(boid.position.x, boid.position.y, fruit.position.x, fruit.position.y);
+    ArrayList<Food> eatenFood = new ArrayList<Food>();
+    for (Food food : foodGroups) {
+      distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
 
-      if (distance < FEEDING_AREA && fruit.food > 0 && boid.health < 255) {
-        fruit.food--;
+      if (distance < FEEDING_AREA && food.foodAmount > 0 && boid.health < 255) {
+        food.foodAmount--;
         boid.health++;
       }
-      if (fruit.food == 0)
-        eatenFruits.add(fruit);
+      if (food.foodAmount == 0)
+        eatenFood.add(food);
     }
     // removes fruits that have been completely eaten
-    for (Fruit eatenFruit : eatenFruits)
-      fruits.remove(eatenFruit);
+    for (Food eaten : eatenFood)
+      foodGroups.remove(eaten);
   }
 }
 
