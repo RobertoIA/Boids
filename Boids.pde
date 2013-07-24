@@ -12,6 +12,10 @@ static final int FEEDING_AREA = 50;
 static final int HUNGER_TRESHOLD = 200;
 static final int TAIL_LENGTH = 4;
 
+static final int MAX_PELLETS = 8;
+static final int PELLET_SIZE = 2;
+static final float PELLETS_SEPARATION = 20;
+
 ArrayList<Boid> boids;
 ArrayList<Fruit> fruits;
 PFont displayFont;
@@ -75,7 +79,7 @@ void draw() {
     fruit.update();
   }
 
-  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - fruits " + this.fruits.size());
+  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - food " + this.fruits.size());
 }
 
 void mouseDragged() {
