@@ -1,3 +1,4 @@
+static final int MAX_POPULATION = 600;
 static final float MAX_SPEED_PARTIAL = .05;
 static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = .8;
@@ -82,7 +83,7 @@ void draw() {
 }
 
 void mouseDragged() {
-  if (mouseButton == LEFT)
+  if (mouseButton == LEFT && this.boids.size() < MAX_POPULATION)
     this.boids.add(new Boid(mouseX, mouseY));
 }
 
