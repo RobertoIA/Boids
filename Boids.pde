@@ -32,6 +32,7 @@ void setup() {
   // initial conditions
   boids = new ArrayList<Boid>();
   foodGroups = new ArrayList<Food>();
+  boids.add(new Predator(100, 100));
 }
 
 void draw() {
