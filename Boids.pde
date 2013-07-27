@@ -100,8 +100,7 @@ Tuple cohesion(Boid boid) {
 
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
-    if (other != boid && distance < SIGHT_RANGE) {
-
+    if (!(other instanceof Predator) && other != boid && distance < SIGHT_RANGE) {
       cohesion.x += other.position.x;
       cohesion.y += other.position.y;
       n++;
@@ -127,7 +126,7 @@ Tuple separation(Boid boid) {
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
 
-    if (other!= boid && distance < PERSONAL_SPACE) {
+    if (!(other instanceof Predator) && other!= boid && distance < PERSONAL_SPACE) {
       separation.x -= (boid.position.x - other.position.x) / (distance / PERSONAL_SPACE);
       separation.y -= (boid.position.y - other.position.y) / (distance / PERSONAL_SPACE);
     }
@@ -148,7 +147,7 @@ Tuple alignment(Boid boid) {
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
 
-    if (other!= boid && distance < SIGHT_RANGE) {
+    if (!(other instanceof Predator) && other!= boid && distance < SIGHT_RANGE) {
       alignment.x += other.velocity.x;
       alignment.y += other.velocity.y;
       n++;
@@ -187,6 +186,14 @@ Tuple avoidance(Boid boid) {
     if (distance < PERSONAL_SPACE + PELLETS_SEPARATION / 2) {
       avoidance.x += (boid.position.x - food.position.x);
       avoidance.y += (boid.position.y - food.position.y);
+    }
+  }
+
+  for (Boid other : boids) {
+    distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
+    if (other instanceof Predator && other!= boid && distance < SIGHT_RANGE) {
+      avoidance.x += (boid.position.x - other.position.x);
+      avoidance.y += (boid.position.y - other.position.y);
     }
   }
 
