@@ -8,7 +8,6 @@ static final float AVOIDANCE_STR = 3.;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
-//static final int FOOD_SIZE = 10;
 static final int FEEDING_AREA = 50;
 static final int HUNGER_TRESHOLD = 200;
 static final int TAIL_LENGTH = 4;
@@ -228,20 +227,25 @@ Tuple attraction(Boid boid) {
 void feeding(Boid boid) {
   float distance;
   if (frameCount % 5 == 0) {
-    ArrayList<Food> eatenFood = new ArrayList<Food>();
-    for (Food food : foodGroups) {
-      distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
+    if (boid instanceof Predator) {
+      ArrayList<Food> eatenFood = new ArrayList<Food>();
+      for (Food food : foodGroups) {
+        distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
 
-      if (distance < FEEDING_AREA && food.foodAmount > 0 && boid.health < 255) {
-        food.foodAmount--;
-        boid.health++;
+        if (distance < FEEDING_AREA && food.foodAmount > 0 && boid.health < 255) {
+          food.foodAmount--;
+          boid.health++;
+        }
+        if (food.foodAmount == 0)
+          eatenFood.add(food);
       }
-      if (food.foodAmount == 0)
-        eatenFood.add(food);
+      // removes fruits that have been completely eaten
+      for (Food eaten : eatenFood)
+        foodGroups.remove(eaten);
     }
-    // removes fruits that have been completely eaten
-    for (Food eaten : eatenFood)
-      foodGroups.remove(eaten);
+    else {
+      // predator feeding
+    }
   }
 }
 

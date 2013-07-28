@@ -4,8 +4,6 @@ class Food {
   Tuple[] pellets;
   int numPellets;
 
-  // int pulseRadius;
-
   public Food(float x, float y) {
     position = new Tuple(x, y);
     foodAmount = 5000;
