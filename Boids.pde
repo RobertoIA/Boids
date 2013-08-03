@@ -4,7 +4,7 @@ static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
 static final float ALIGNMENT_STR = 1.;
-static final float AVOIDANCE_STR = 3.;
+static final float AVOIDANCE_STR = 2.;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
@@ -99,7 +99,7 @@ Tuple cohesion(Boid boid) {
 
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
-    if (!(other instanceof Predator) && other != boid && distance < SIGHT_RANGE) {
+    if (other != boid && distance < SIGHT_RANGE) {
       cohesion.x += other.position.x;
       cohesion.y += other.position.y;
       n++;
@@ -165,20 +165,17 @@ Tuple alignment(Boid boid) {
 Tuple avoidance(Boid boid) {
   Tuple avoidance = new Tuple(0, 0);
 
-  if (dist(boid.position.x, boid.position.y, 0, boid.position.y) < SIGHT_RANGE) {
+  // Walls impact avoidance.
+  if (dist(boid.position.x, boid.position.y, 0, boid.position.y) < SIGHT_RANGE)
     avoidance.x += MAX_SPEED_PARTIAL;
-  }
-  else if (dist(boid.position.x, boid.position.y, width, boid.position.y) < SIGHT_RANGE) {
+  else if (dist(boid.position.x, boid.position.y, width, boid.position.y) < SIGHT_RANGE)
     avoidance.x -= MAX_SPEED_PARTIAL;
-  }
-
-  if (dist(boid.position.x, boid.position.y, boid.position.x, 0) < SIGHT_RANGE) {
+  if (dist(boid.position.x, boid.position.y, boid.position.x, 0) < SIGHT_RANGE)
     avoidance.y += MAX_SPEED_PARTIAL;
-  }
-  else if (dist(boid.position.x, boid.position.y, boid.position.x, height) < SIGHT_RANGE) {
+  else if (dist(boid.position.x, boid.position.y, boid.position.x, height) < SIGHT_RANGE)
     avoidance.y -= MAX_SPEED_PARTIAL;
-  }
 
+  // Impact with food avoidance.
   float distance;
   for (Food food : foodGroups) {
     distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
@@ -188,6 +185,7 @@ Tuple avoidance(Boid boid) {
     }
   }
 
+  // Predator avoidance.
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
     if (other instanceof Predator && other!= boid && distance < SIGHT_RANGE) {
@@ -196,6 +194,7 @@ Tuple avoidance(Boid boid) {
     }
   }
 
+  avoidance.setBounds(MAX_SPEED_PARTIAL);
   return avoidance;
 }
 
@@ -227,7 +226,7 @@ Tuple attraction(Boid boid) {
 void feeding(Boid boid) {
   float distance;
   if (frameCount % 5 == 0) {
-    if (boid instanceof Predator) {
+    if (!(boid instanceof Predator)) {
       ArrayList<Food> eatenFood = new ArrayList<Food>();
       for (Food food : foodGroups) {
         distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
@@ -243,9 +242,16 @@ void feeding(Boid boid) {
       for (Food eaten : eatenFood)
         foodGroups.remove(eaten);
     }
-    else {
+    else if (boid.health < 255) {
       // predator feeding
+      ArrayList<Boid> eatenBoids = new ArrayList<Boid>();
+      for (Boid other : boids) {
+        distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
+        if (!(other instanceof Predator) && distance < FEEDING_AREA && other.health > 0) {
+          other.health-=50;
+          boid.health++;
+        }
+      }
     }
   }
 }
-
