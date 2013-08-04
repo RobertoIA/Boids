@@ -31,7 +31,6 @@ void setup() {
   // initial conditions
   boids = new ArrayList<Boid>();
   foodGroups = new ArrayList<Food>();
-  boids.add(new Predator(100, 100));
 }
 
 void draw() {
@@ -41,7 +40,7 @@ void draw() {
 
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
-  ArrayList<Boid> deadBoids = new ArrayList<Boid>();
+  ArrayList<Boid> hungryBoids = new ArrayList<Boid>();
   for (Boid boid: boids) {
     // draw boids
     boid.draw();
@@ -65,13 +64,19 @@ void draw() {
     feeding(boid);
 
     boid.update();
-    if (boid.health == 0)
-      deadBoids.add(boid);
+    if (boid.hunger == 0)
+      hungryBoids.add(boid);
   }
 
-  // removes dead boids
-  for (Boid deadBoid : deadBoids)
-    boids.remove(deadBoid);
+  // hungry boids become predators
+  for (Boid hungryBoid : hungryBoids) {
+    Predator newPredator = new Predator(hungryBoid.position.x, hungryBoid.position.y);
+    newPredator.tail = hungryBoid.tail;
+    newPredator.health = hungryBoid.health;
+    newPredator.hunger = hungryBoid.hunger;
+    boids.remove(hungryBoid);
+    boids.add(newPredator);
+  }
 
   // draw fruits
   for (Food food : foodGroups) {
@@ -249,9 +254,10 @@ void feeding(Boid boid) {
         distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
         if (!(other instanceof Predator) && distance < FEEDING_AREA && other.health > 0) {
           other.health-=50;
-          boid.health++;
+          boid.hunger++;
         }
       }
     }
   }
 }
+

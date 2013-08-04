@@ -4,6 +4,7 @@ class Boid {
   Tuple velocity;
   Tuple[] tail;
   int health;
+  int hunger;
 
   public Boid(float x, float y) {
     position = new Tuple(x, y);
@@ -12,7 +13,8 @@ class Boid {
     tail = new Tuple[TAIL_LENGTH];
     for (int i = 0; i < TAIL_LENGTH; i++)
       tail[i] = new Tuple(position.x, position.y);
-    health = (int) random(200, 256);
+    health = 255;
+    hunger = (int) random(200, 256);
   }
 
   public void update() {
@@ -31,7 +33,7 @@ class Boid {
 
     // starvation
     if (frameCount % 30 == 0 && health > 0)
-      health--;
+      hunger--;
   }
 
   public void draw() {
