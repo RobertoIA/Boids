@@ -5,6 +5,7 @@ class Boid {
   Tuple[] tail;
   int health;
   int hunger;
+  int pulseRadius;
 
   public Boid(float x, float y) {
     position = new Tuple(x, y);
@@ -39,9 +40,21 @@ class Boid {
   public void draw() {
     strokeWeight(1);
     stroke(health >= 0 ? health : 0);
+
     for (int i = 0; i < TAIL_LENGTH - 1; i++)
       line(tail[i].x, tail[i].y, tail[i + 1].x, tail[i + 1].y);
     line(tail[TAIL_LENGTH - 1].x, tail[TAIL_LENGTH - 1].y, position.x, position.y);
+
+    if (hunger <= 50) {
+      if (frameCount % 2 == 0)
+        pulseRadius = pulseRadius < FEEDING_AREA ? pulseRadius + 1 : 0;
+      noFill();
+      strokeWeight(1);
+      stroke(255);
+      ellipse(position.x, position.y, pulseRadius, pulseRadius);
+    }
+    else if (pulseRadius != 0)
+      pulseRadius = 0;
   }
 
   private void manageCollisions() {

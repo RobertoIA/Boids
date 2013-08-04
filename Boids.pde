@@ -14,10 +14,12 @@ static final int TAIL_LENGTH = 4;
 static final int MAX_PELLETS = 8;
 static final int PELLET_SIZE = 2;
 static final float PELLETS_SEPARATION = 20;
+static final int MAX_PREDATORS = 5;
 
 ArrayList<Boid> boids;
 ArrayList<Food> foodGroups;
 PFont displayFont;
+int predators;
 
 void setup() {
   size(800, 800);
@@ -31,6 +33,7 @@ void setup() {
   // initial conditions
   boids = new ArrayList<Boid>();
   foodGroups = new ArrayList<Food>();
+  predators = 0;
 }
 
 void draw() {
@@ -45,22 +48,30 @@ void draw() {
   for (Boid boid: boids) {
     // draw boids
     boid.draw();
-
-    // rule 1: cohesion
-    cohesion = cohesion(boid);
-    // rule 2: separation
-    separation = separation(boid);
-    // rule 3: alignment
-    alignment = alignment(boid);
-    // avoidance
-    avoidance = avoidance(boid);
-    // attraction
-    attraction = attraction(boid);
-    // apply velocity changes
-    boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR +
-      avoidance.x * AVOIDANCE_STR + attraction.x * ATTRACTION_STR;
-    boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR +
-      avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;  
+    if (!(boid instanceof Predator)) {
+      // rule 1: cohesion
+      cohesion = cohesion(boid);
+      // rule 2: separation
+      separation = separation(boid);
+      // rule 3: alignment
+      alignment = alignment(boid);
+      // avoidance
+      avoidance = avoidance(boid);
+      // attraction
+      attraction = attraction(boid);
+      // apply velocity changes
+      boid.velocity.x += cohesion.x * COHESION_STR + separation.x * SEPARATION_STR + alignment.x * ALIGNMENT_STR +
+        avoidance.x * AVOIDANCE_STR + attraction.x * ATTRACTION_STR;
+      boid.velocity.y += cohesion.y * COHESION_STR + separation.y * SEPARATION_STR + alignment.y * ALIGNMENT_STR +
+        avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;
+    } 
+    else {
+      cohesion = cohesion(boid);
+      alignment = alignment(boid);
+      avoidance = avoidance(boid);
+      boid.velocity.x += cohesion.x * COHESION_STR + alignment.x * ALIGNMENT_STR + avoidance.x * AVOIDANCE_STR;
+      boid.velocity.y += cohesion.y * COHESION_STR + alignment.y * ALIGNMENT_STR + avoidance.y * AVOIDANCE_STR;
+    }
 
     feeding(boid);
 
@@ -72,19 +83,23 @@ void draw() {
       hungryBoids.add(boid);
   }
 
+  // hungry boids become predators
+  for (Boid hungryBoid : hungryBoids) {
+    if (predators < MAX_PREDATORS) {
+      Predator newPredator = new Predator(hungryBoid.position.x, hungryBoid.position.y);
+      newPredator.tail = hungryBoid.tail;
+      newPredator.health = hungryBoid.health;
+      newPredator.hunger = hungryBoid.hunger;
+      boids.remove(hungryBoid);
+      boids.add(newPredator);
+      predators++;
+    } 
+    else
+      hungryBoid.health -= 10;
+  }
   // removes dead boids
   for (Boid deadBoid : deadBoids)
     boids.remove(deadBoid);
-
-  // hungry boids become predators
-  for (Boid hungryBoid : hungryBoids) {
-    Predator newPredator = new Predator(hungryBoid.position.x, hungryBoid.position.y);
-    newPredator.tail = hungryBoid.tail;
-    newPredator.health = hungryBoid.health;
-    newPredator.hunger = hungryBoid.hunger;
-    boids.remove(hungryBoid);
-    boids.add(newPredator);
-  }
 
   // draw fruits
   for (Food food : foodGroups) {
@@ -103,8 +118,8 @@ void mouseDragged() {
 void mousePressed() {
   if (mouseButton == RIGHT)
     foodGroups.add(new Food(mouseX, mouseY));
-  else
-    this.boids.add(new Predator(mouseX, mouseY));
+  //  else
+  //    this.boids.add(new Predator(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
@@ -140,7 +155,7 @@ Tuple separation(Boid boid) {
   for (Boid other : boids) {
     distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
 
-    if (!(other instanceof Predator) && other!= boid && distance < PERSONAL_SPACE) {
+    if (other!= boid && distance < PERSONAL_SPACE) {
       separation.x -= (boid.position.x - other.position.x) / (distance / PERSONAL_SPACE);
       separation.y -= (boid.position.y - other.position.y) / (distance / PERSONAL_SPACE);
     }
@@ -223,8 +238,8 @@ Tuple attraction(Boid boid) {
     attraction.x -= (boid.position.x - mouseX) / (distance / PERSONAL_SPACE);
     attraction.y -= (boid.position.y - mouseY) / (distance / PERSONAL_SPACE);
   }
-  // attraction to fruit
-  if (boid.health < HUNGER_TRESHOLD) {
+  // attraction to food
+  if (boid.hunger < HUNGER_TRESHOLD) {
     for (Food food : foodGroups) {
       distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
       if (distance < SIGHT_RANGE) {
