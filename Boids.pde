@@ -41,6 +41,7 @@ void draw() {
   // move all boids to new positions
   Tuple cohesion, separation, alignment, avoidance, attraction;
   ArrayList<Boid> hungryBoids = new ArrayList<Boid>();
+  ArrayList<Boid> deadBoids = new ArrayList<Boid>();
   for (Boid boid: boids) {
     // draw boids
     boid.draw();
@@ -64,9 +65,16 @@ void draw() {
     feeding(boid);
 
     boid.update();
-    if (boid.hunger == 0)
+
+    if (boid.health <= 0)
+      deadBoids.add(boid);
+    else if (boid.hunger <= 0)
       hungryBoids.add(boid);
   }
+
+  // removes dead boids
+  for (Boid deadBoid : deadBoids)
+    boids.remove(deadBoid);
 
   // hungry boids become predators
   for (Boid hungryBoid : hungryBoids) {
@@ -95,6 +103,8 @@ void mouseDragged() {
 void mousePressed() {
   if (mouseButton == RIGHT)
     foodGroups.add(new Food(mouseX, mouseY));
+  else
+    this.boids.add(new Predator(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
@@ -253,8 +263,8 @@ void feeding(Boid boid) {
       for (Boid other : boids) {
         distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
         if (!(other instanceof Predator) && distance < FEEDING_AREA && other.health > 0) {
-          other.health-=50;
-          boid.hunger++;
+          other.health -= 10;
+          boid.hunger += 10;
         }
       }
     }

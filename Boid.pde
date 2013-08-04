@@ -18,7 +18,7 @@ class Boid {
   }
 
   public void update() {
-    velocity.setBounds(MAX_SPEED_TOTAL);
+    velocity.setBounds(MAX_SPEED_TOTAL * (health / 255.0));
     manageCollisions();
 
     // update tail
@@ -38,7 +38,7 @@ class Boid {
 
   public void draw() {
     strokeWeight(1);
-    stroke(health);
+    stroke(health >= 0 ? health : 0);
     for (int i = 0; i < TAIL_LENGTH - 1; i++)
       line(tail[i].x, tail[i].y, tail[i + 1].x, tail[i + 1].y);
     line(tail[TAIL_LENGTH - 1].x, tail[TAIL_LENGTH - 1].y, position.x, position.y);
