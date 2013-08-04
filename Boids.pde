@@ -263,7 +263,7 @@ void feeding(Boid boid) {
 
         if (distance < FEEDING_AREA && food.foodAmount > 0 && boid.health < 255) {
           food.foodAmount--;
-          boid.health++;
+          boid.hunger++;
         }
         if (food.foodAmount == 0)
           eatenFood.add(food);
