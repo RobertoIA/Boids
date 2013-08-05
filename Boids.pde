@@ -66,9 +66,16 @@ void draw() {
         avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;
     } 
     else {
-      cohesion = cohesion(boid);
-      alignment = alignment(boid);
+      // only hunts if hungry.
+      if (boid.hunger < HUNGER_TRESHOLD) {
+        cohesion = cohesion(boid);
+        alignment = alignment(boid);
+      } 
+      else {
+        cohesion = alignment = new Tuple(0, 0);
+      }
       avoidance = avoidance(boid);
+
       boid.velocity.x += cohesion.x * COHESION_STR + alignment.x * ALIGNMENT_STR + avoidance.x * AVOIDANCE_STR;
       boid.velocity.y += cohesion.y * COHESION_STR + alignment.y * ALIGNMENT_STR + avoidance.y * AVOIDANCE_STR;
     }
@@ -118,8 +125,8 @@ void mouseDragged() {
 void mousePressed() {
   if (mouseButton == RIGHT)
     foodGroups.add(new Food(mouseX, mouseY));
-  //  else
-  //    this.boids.add(new Predator(mouseX, mouseY));
+  else
+    this.boids.add(new Predator(mouseX, mouseY));
 }
 
 Tuple cohesion(Boid boid) {
@@ -255,13 +262,13 @@ Tuple attraction(Boid boid) {
 
 void feeding(Boid boid) {
   float distance;
-  if (frameCount % 5 == 0) {
+  if (frameCount % 5 == 0 && boid.hunger < 255) {
     if (!(boid instanceof Predator)) {
       ArrayList<Food> eatenFood = new ArrayList<Food>();
       for (Food food : foodGroups) {
         distance = dist(boid.position.x, boid.position.y, food.position.x, food.position.y);
 
-        if (distance < FEEDING_AREA && food.foodAmount > 0 && boid.health < 255) {
+        if (distance < FEEDING_AREA && food.foodAmount > 0) {
           food.foodAmount--;
           boid.hunger++;
         }

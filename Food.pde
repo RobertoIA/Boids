@@ -6,7 +6,7 @@ class Food {
 
   public Food(float x, float y) {
     position = new Tuple(x, y);
-    foodAmount = 5000;
+    foodAmount = 2500;
     numPellets = MAX_PELLETS;
     pellets = new Tuple[MAX_PELLETS];
     for (int i = 0; i < MAX_PELLETS; i++) {
@@ -17,7 +17,7 @@ class Food {
   }
 
   public void draw() {
-    numPellets = (int) map(foodAmount, 0, 5000, 0, MAX_PELLETS);
+    numPellets = (int) map(foodAmount, 0, 2500, 0, MAX_PELLETS);
     for (int i = 0; i < numPellets; i++) {
       stroke(255);
       strokeWeight(PELLET_SIZE);
