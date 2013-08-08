@@ -1,4 +1,4 @@
-static final int MAX_POPULATION = 600;
+astatic final int MAX_POPULATION = 600;
 static final float MAX_SPEED_PARTIAL = .05;
 static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = .8;
@@ -21,7 +21,7 @@ ArrayList<Food> foodGroups;
 int predators;
 
 void setup() {
-  size(800, 800);
+  size(200, 200);
   frameRate(60);
   smooth();
   background(0);
@@ -105,7 +105,7 @@ void draw() {
     food.update();
   }
 
-  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - food " + this.foodGroups.size());
+  //  frame.setTitle((int) frameRate + "fps - population " + this.boids.size() + " - food " + this.foodGroups.size());
 }
 
 void mouseDragged() {
