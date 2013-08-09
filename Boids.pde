@@ -1,10 +1,10 @@
-astatic final int MAX_POPULATION = 600;
+static final int MAX_POPULATION = 500;
 static final float MAX_SPEED_PARTIAL = .05;
 static final float MAX_SPEED_TOTAL = 2;
 static final float COHESION_STR = .8;
 static final float SEPARATION_STR = 1.8;
 static final float ALIGNMENT_STR = 1.;
-static final float AVOIDANCE_STR = 2.;
+static final float AVOIDANCE_STR = 3.;
 static final float ATTRACTION_STR = 3.5;
 static final int SIGHT_RANGE = 60;
 static final int PERSONAL_SPACE = 12;
@@ -21,7 +21,7 @@ ArrayList<Food> foodGroups;
 int predators;
 
 void setup() {
-  size(200, 200);
+  size(600, 200);
   frameRate(60);
   smooth();
   background(0);
@@ -31,6 +31,12 @@ void setup() {
   boids = new ArrayList<Boid>();
   foodGroups = new ArrayList<Food>();
   predators = 0;
+
+  // initial spawns
+  for (int i = 0; i < (MAX_POPULATION / 2); i++)
+    boids.add(new Boid(random(0, width - 1), random(0, height - 1)));
+  for (int j = 0; j < (MAX_PREDATORS / 2); j++)
+    boids.add(new Predator(random(0, width - 1), random(0, height - 1)));
 }
 
 void draw() {
