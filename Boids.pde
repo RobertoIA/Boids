@@ -21,7 +21,7 @@ ArrayList<Food> foodGroups;
 int predators;
 
 void setup() {
-  size(600, 200);
+  size(600, 600);
   frameRate(60);
   smooth();
   background(0);
@@ -33,10 +33,25 @@ void setup() {
   predators = 0;
 
   // initial spawns
-  for (int i = 0; i < (MAX_POPULATION / 2); i++)
-    boids.add(new Boid(random(0, width - 1), random(0, height - 1)));
-  for (int j = 0; j < (MAX_PREDATORS / 2); j++)
-    boids.add(new Predator(random(0, width - 1), random(0, height - 1)));
+  //  //  for (int i = 0; i < (MAX_POPULATION / 2); i++)
+  //  //    boids.add(new Boid(random(0, width - 1), random(0, height - 1)));
+  //  //  for (int j = 0; j < (MAX_PREDATORS / 2); j++)
+  //  //    boids.add(new Predator(random(0, width - 1), random(0, height - 1)));
+
+  // demo spawns
+  // first demo
+  //  for (int i = 0; i < 50; i++)
+  //    boids.add(new Boid(100 + i, 100 + i));
+  //  boids.get(0).hunger = 15;
+  // second demo
+  //  for (int i = 0; i < 50; i++) {
+  //    boids.add(new Boid(100 + i, 100 + i));
+  //    boids.get(boids.size() - 1).hunger = 100;
+  //  }
+  // third demo
+  //  for (int i = 0; i < 50; i++)
+  //    boids.add(new Boid(100 + i, 100 + i));
+  //  boids.add(new Predator(50, 50));
 }
 
 void draw() {
