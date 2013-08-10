@@ -33,10 +33,10 @@ void setup() {
   predators = 0;
 
   // initial spawns
-  //  //  for (int i = 0; i < (MAX_POPULATION / 2); i++)
-  //  //    boids.add(new Boid(random(0, width - 1), random(0, height - 1)));
-  //  //  for (int j = 0; j < (MAX_PREDATORS / 2); j++)
-  //  //    boids.add(new Predator(random(0, width - 1), random(0, height - 1)));
+  for (int i = 0; i < (MAX_POPULATION / 2); i++)
+    boids.add(new Boid(random(0, width - 1), random(0, height - 1)));
+  for (int j = 0; j < (MAX_PREDATORS / 2); j++)
+    boids.add(new Predator(random(0, width - 1), random(0, height - 1)));
 
   // demo spawns
   // first demo
