@@ -6,15 +6,15 @@ Implements flocking, simple predator-prey interactions and feeding mechanics.
 ###Lifecycle
 Boids go hungry over time. If they can't find food, they will emit light pulses as a complain. If they starve, they will become predators.
 
-![](http://i.minus.com/iWJf5vlwk1xRq.gif)
+![](http://i.minus.com/ibgpEQhfVx3kSO.gif)
 
 Hungry boids will feed on food pellets.
 
-![](http://i.minus.com/ibnbyy8FrDShdi.gif)
+![](http://i.minus.com/iuYLRjh2rM5AH.gif)
 
 Hungry predators will consume nearby boids, injuring and eventually killing them.
 
-![](http://i.minus.com/icXgJRnKPll9O.gif)
+![](http://i.minus.com/ijrX2j0KmQXKv.gif)
 
 ### Controls
 * Holding the left mouse button and dragging it on the window spawns boids.
