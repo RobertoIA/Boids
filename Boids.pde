@@ -84,9 +84,15 @@ void draw() {
         avoidance.y * AVOIDANCE_STR + attraction.y * ATTRACTION_STR;
     } 
     else {
-      cohesion = cohesion(boid);
-      alignment = alignment(boid);
-      avoidance = avoidance(boid);
+      if (boid.hunger < HUNGER_TRESHOLD) {
+        cohesion = cohesion(boid);
+        alignment = alignment(boid);
+        avoidance = avoidance(boid);
+      }
+      else {
+        alignment = cohesion = new Tuple(0, 0);
+        avoidance = avoidance(boid);
+      }
 
       boid.velocity.x += cohesion.x * COHESION_STR + alignment.x * ALIGNMENT_STR + avoidance.x * AVOIDANCE_STR;
       boid.velocity.y += cohesion.y * COHESION_STR + alignment.y * ALIGNMENT_STR + avoidance.y * AVOIDANCE_STR;
@@ -297,8 +303,8 @@ void feeding(Boid boid) {
       for (Boid other : boids) {
         distance = dist(boid.position.x, boid.position.y, other.position.x, other.position.y);
         if (!(other instanceof Predator) && distance < FEEDING_AREA && other.health > 0) {
-          other.health -= 10;
-          boid.hunger += 2;
+          other.health -= 5;
+          boid.hunger += 1;
         }
       }
     }
